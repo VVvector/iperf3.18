@@ -63,6 +63,23 @@
 
 #include "iperf_pthread.h"
 
+
+#define HAVE_UDP_SEGMENT 1
+#define HAVE_UDP_GRO 1
+
+#define GSO_BF_MAX_SIZE 64000
+#define GSO_DEF 0
+#ifndef UDP_SEGMENT
+#define UDP_SEGMENT 103
+#endif
+
+#define GRO_DEF 0
+#define GRO_BF_MAX_SIZE 65535
+#ifndef UDP_GRO
+#define UDP_GRO 104
+#endif
+
+
 /*
  * Atomic types highly desired, but if not, we approximate what we need
  * with normal integers and warn.
@@ -184,6 +201,15 @@ struct iperf_settings
     int       idle_timeout;         /* server idle time timeout */
     unsigned int snd_timeout; /* Timeout for sending tcp messages in active mode, in us */
     struct iperf_time rcv_timeout;  /* Timeout for receiving messages in active mode, in us */
+#ifdef HAVE_UDP_SEGMENT
+    int       gso;
+    int       gso_dg_size;
+    int       gso_bf_size;
+#endif
+#ifdef HAVE_UDP_GRO
+    int       gro;
+    int       gro_bf_size;
+#endif
 };
 
 struct iperf_test;
